@@ -41,6 +41,8 @@ python llama.py
 
 irm https://ollama.com/install.ps1 | iex
 https://ollama.com/download
+ollama run llama3.2
+ollama list
 
 
 
