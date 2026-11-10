@@ -31,6 +31,14 @@ Installation
 6. Favourite Folder -
    C:\RajWork\2026\ESLearning\mcp\ai-series
 
+Comfortable Knowledge / Pre-requisite
+--------------------------------
+1. git knowledge
+2. json - xml/html/yaml
+	- json-rpc
+
+
+
 virtual environment
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -43,7 +51,13 @@ irm https://ollama.com/install.ps1 | iex
 https://ollama.com/download/windows
 ollama run llama3.2
 ollama list
+ollama pull qwen2.5:7b
 
+
+python + llm != organization knowledge domain
+mcp host + mcp server
+
+npx @modelcontextprotocol/inspector@latest --cli mcp run server.py --method tools/list
 
 
 
