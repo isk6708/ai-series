@@ -1,0 +1,52 @@
+HeiTech WIFI
+Password: HJRQ5EB5FD7
+SSID: HUAWEI-B618-4AFE
+
+Training Material
+github.com/isk6708
+Repo: ai-series
+
+---------------------
+HTTP - Browser Edge, Chrome, Safari ->Website
+
+MCP - Model Context Protocol
+
+MCP Server - HR System, Database, API
+Model - ChatGPT - OpenAi - paid - 
+	llama3.2,qwen2.5 - Ollama - zero - cost 
+Context -
+MCP Client + LLM / MCP Host - 
+
+--------------------------
+Installation
+
+1. python --version
+>=3.10
+2. node -v
+3. IDE - Visual Studio Code
+4. API Key - subscribed openai
+	- Ollama - zero cost LLM
+        -
+5. GitHub account - 
+6. Favourite Folder -
+   C:\RajWork\2026\ESLearning\mcp\ai-series
+
+virtual environment
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+python -m ensurepip --default-pip
+python llama.py
+
+irm https://ollama.com/install.ps1 | iex
+https://ollama.com/download
+
+
+
+
+
+
+
+
+ 
