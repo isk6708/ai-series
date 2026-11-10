@@ -40,7 +40,7 @@ python -m ensurepip --default-pip
 python llama.py
 
 irm https://ollama.com/install.ps1 | iex
-https://ollama.com/download
+https://ollama.com/download/windows
 ollama run llama3.2
 ollama list
 
