@@ -57,7 +57,7 @@ async def main():
             print("Session initialized, ready to call tools.")
 
             # Call a tool - the LOG lines arrive while it runs
-            tool_result = await session.call_tool("echo", {"message": "hello"})
+            tool_result = await session.call_tool("echo", {"message": "Radja"})
 
             print("Tool result:", tool_result.content[0].text)
             print("Log messages received:", len(logging_collector.log_messages))

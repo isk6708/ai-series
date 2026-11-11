@@ -61,6 +61,16 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 npx @modelcontextprotocol/inspector@latest --cli mcp run server.py --method tools/list
 
+Day 2
+--------------
+curl.exe -X POST "http://127.0.0.1:3000/mcp" -H "Accept: text/event-stream, application/json" -H "Content-Type: application/json" -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-03-26\",\"capabilities\":{\"tools\":{}},\"clientInfo\":{\"name\":\"ExampleClient\",\"version\":\"1.0.0\"}}}"
+
+id: b2e2c494-5296-4a14-b8d1-0e9dc6527bd0
+
+curl.exe -X POST "http://127.0.0.1:3000/mcp" -H "Content-Type: application/json" -H "Accept: text/event-stream, application/json" -H "mcp-session-id: b2e2c494-5296-4a14-b8d1-0e9dc6527bd0" -d "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"
+
+
+
 
 
 
