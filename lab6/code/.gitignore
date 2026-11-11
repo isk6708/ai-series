@@ -1,0 +1,16 @@
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache / build files
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Secrets (e.g. GITHUB_TOKEN)
+.env
+node_modules/
+build/
