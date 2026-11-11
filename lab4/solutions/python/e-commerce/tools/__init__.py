@@ -6,6 +6,8 @@ from .get_all_customers import tool_get_all_customers
 from .get_orders import tool_get_orders
 from .get_product import tool_get_product
 from .place_order import tool_place_order
+from .get_order import tool_get_order
+from .get_carts import tool_get_all_carts
 
 tools = {
   tool_add_to_cart["name"] : tool_add_to_cart,
@@ -15,5 +17,7 @@ tools = {
   tool_get_all_customers["name"] : tool_get_all_customers,
   tool_get_orders["name"] : tool_get_orders,
   tool_get_product["name"] : tool_get_product,
-  tool_place_order["name"] : tool_place_order
+  tool_place_order["name"] : tool_place_order,
+  tool_get_order["name"] : tool_get_order,
+  tool_get_all_carts["name"] : tool_get_all_carts
 }

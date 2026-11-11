@@ -28,14 +28,24 @@ async def run():
             tools = await session.list_tools()
             print(tools)
 
-            result = await session.call_tool("add", arguments={"a": 1, "b": 2})
+            # FIX: this server has no "add" tool (that lives in ../tools from the
+            # previous exercise), so call real e-commerce tools instead
+            result = await session.call_tool("get_all_products", arguments={})
+            print("Tool result:", result)
+
+            result = await session.call_tool(
+                "add_to_cart", arguments={"cart_id": 1, "product_id": 3, "quantity": 2}
+            )
+            print("Tool result:", result)
+
+            result = await session.call_tool("get_all_cart_items", arguments={"cart_id": 1})
             print("Tool result:", result)
 
             prompts = await session.list_prompts()
             print("Available prompts:", prompts)
 
             prompt = await session.get_prompt(
-                "example-prompt"
+                "example-prompt", arguments={"arg1": "value"}  # arg1 is required
             )
 
             print("Prompt:", prompt)
@@ -50,4 +60,4 @@ async def run():
 if __name__ == "__main__":
     import asyncio
 
-    asyncio.run(run())
+    asyncio.run(run())

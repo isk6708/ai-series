@@ -8,39 +8,24 @@ from starlette.responses import Response
 from starlette.routing import Mount, Route
 
 import tools
+from tool_utils import pydantic_to_json, run_tool
 
 # Create a server instance
-server = Server("low-level-server")
+server = Server("e-commerce-server")
 
-def pydantic_to_json(model_cls: type) -> dict:
-    schema = model_cls.schema()
-    properties = {}
-    required = schema.get("required", [])
-    for prop, details in schema.get("properties", {}).items():
-        properties[prop] = {"type": details.get("type", "string")}
-    return {
-        "type": "object",
-        "properties": properties,
-        "required": required
-    }
-
-no_params_object = {
-    "type": "object",
-    "properties": {},
-    "required": []  
-}
+# pydantic_to_json, no_params_object and the JSON result formatting now live in
+# tool_utils.py so server.py (SDK 1.x) and server_v2.py (SDK 2.x) share them.
 
 @server.list_tools()
 async def handle_list_tools() -> list[types.Tool]:
     tool_list = []
-    print(tools)
 
     for tool in tools.tools.values():
         tool_list.append(
             types.Tool(
                 name=tool["name"],
                 description=tool["description"],
-                inputSchema= pydantic_to_json(tool["input_schema"]) if tool["input_schema"] is not None else no_params_object,
+                inputSchema=pydantic_to_json(tool["input_schema"]),
             )
         )
     return tool_list
@@ -50,21 +35,13 @@ async def handle_call_tool(
     name: str, arguments: dict[str, str] | None
 ) -> list[types.TextContent]:
     
-    # tools is a dictionary with tool names as keys
-    if name not in tools.tools:
-        raise ValueError(f"Unknown tool: {name}")
-    
-    tool = tools.tools[name]
-
-    result = "default"
-    try:
-        result = await tool["handler"](arguments)
-    except Exception as e:
-        raise ValueError(f"Error calling tool {name}: {str(e)}")
+    # tools is a dictionary with tool names as keys; run_tool validates the
+    # name, calls the handler and returns the result as JSON text
+    result = await run_tool(name, arguments)
 
     return [
-        types.TextContent(type="text", text=str(result))
-    ]   
+        types.TextContent(type="text", text=result)
+    ]
 
 @server.list_prompts()
 async def handle_list_prompts() -> list[types.Prompt]:
@@ -123,6 +100,9 @@ if __name__ == "__main__":
     uvicorn.run(starlette_app, host="127.0.0.1", port=port)
 
 # start with python server.py
+
+# requires MCP Python SDK 1.x  ->  pip install -r ../requirements.txt
+# (on SDK 2.x use server_v2.py instead)
 
 # test with: npx @modelcontextprotocol/inspector --cli http://localhost:8000/sse --method tools/list
 

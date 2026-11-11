@@ -11,12 +11,17 @@
 
 #     return [{"type": "text", "name": f"ID: {order.order_id},customer: {order.customer_id}"} for order in filtered_orders]
 
-from data import orders
+from data import orders, customers
 from .schema import OrderModel, GetOrderInputModel
 
 async def handler(args) -> list[OrderModel]:
     # get order by id
-    input = GetOrderInputModel(**args)
+    input = GetOrderInputModel(**(args or {}))
+
+    # FIX: reject unknown customers instead of silently returning []
+    if input.customer_id != 0 and not any(customer.id == input.customer_id for customer in customers):
+        raise ValueError(f"Invalid customer_id: {input.customer_id}")
+
     # filter orders based on customer_id if provided
     filtered_orders = []
     
@@ -30,7 +35,7 @@ async def handler(args) -> list[OrderModel]:
 
 tool_get_orders = {
     "name": "get_orders",
-    "description": "Gets all orders",
+    "description": "Gets orders. Pass customer_id to filter by customer, or omit it (or 0) for all orders",
     "input_schema": GetOrderInputModel,
     "handler": handler
-}
+}

@@ -1,0 +1,7 @@
+# server.py uses the MCP Python SDK 1.x low-level API (@server.list_tools() decorators),
+# which was removed in SDK 2.x. Pin to 1.x so `python server.py` works.
+# If you are on SDK 2.x, run server_v2.py instead.
+mcp[cli]>=1.9,<2
+uvicorn
+starlette
+pydantic>=2

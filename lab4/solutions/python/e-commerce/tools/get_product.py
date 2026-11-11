@@ -18,12 +18,12 @@ async def handler(args) -> ProductModel:
         if product.id == input.product_id:
             return product
     
-    # If no product found, return None or raise an error
-    return None
+    # FIX: raise a clear error instead of returning the text "None"
+    raise ValueError(f"Product not found: {input.product_id}")
 
 tool_get_product = {
     "name": "get_product",
     "description": "Gets a product by ID",
     "input_schema": GetProductInputModel,
     "handler": handler
-}
+}
