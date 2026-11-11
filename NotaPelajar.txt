@@ -63,11 +63,16 @@ npx @modelcontextprotocol/inspector@latest --cli mcp run server.py --method tool
 
 Day 2
 --------------
-curl.exe -X POST "http://127.0.0.1:3000/mcp" -H "Accept: text/event-stream, application/json" -H "Content-Type: application/json" -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-03-26\",\"capabilities\":{\"tools\":{}},\"clientInfo\":{\"name\":\"ExampleClient\",\"version\":\"1.0.0\"}}}"
+curl.exe -i -X POST "http://127.0.0.1:3000/mcp" -H "Accept: text/event-stream, application/json" -H "Content-Type: application/json" -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-03-26\",\"capabilities\":{\"tools\":{}},\"clientInfo\":{\"name\":\"ExampleClient\",\"version\":\"1.0.0\"}}}"
 
-id: b2e2c494-5296-4a14-b8d1-0e9dc6527bd0
 
-curl.exe -X POST "http://127.0.0.1:3000/mcp" -H "Content-Type: application/json" -H "Accept: text/event-stream, application/json" -H "mcp-session-id: b2e2c494-5296-4a14-b8d1-0e9dc6527bd0" -d "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"
+curl.exe -i -X POST "http://127.0.0.1:3000/mcp" -H "Content-Type: application/json" -H "Accept: text/event-stream, application/json" -H "mcp-session-id: e08066de155840c9807890367eed9421" -d "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"
+
+
+curl.exe -i -X POST "http://127.0.0.1:3000/mcp" -H "Content-Type: application/json" -H "Accept: text/event-stream, application/json" -H "mcp-session-id: e08066de155840c9807890367eed9421" -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"process-files\",\"arguments\":{\"message\":\"Radja\"}}}"
+
+curl.exe -i "http://127.0.0.1:3000/mcp" -H "Content-Type: application/json" -H "Accept: text/event-stream, application/json" -H "mcp-session-id: e08066de155840c9807890367eed9421" -H "last-event-id: 5b9191f0-1d2a-4899-85b2-9b72ecfe9638"
+
 
 
 
