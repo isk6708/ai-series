@@ -74,6 +74,11 @@ curl.exe -i -X POST "http://127.0.0.1:3000/mcp" -H "Content-Type: application/js
 curl.exe -i "http://127.0.0.1:3000/mcp" -H "Content-Type: application/json" -H "Accept: text/event-stream, application/json" -H "mcp-session-id: e08066de155840c9807890367eed9421" -H "last-event-id: 5b9191f0-1d2a-4899-85b2-9b72ecfe9638"
 
 
+ollama pull deepseek-r1:8b      # ~5 GB RAM/VRAM
+ollama pull qwen3:8b
+ollama pull gemma3:12b
+
+
 
 
 
