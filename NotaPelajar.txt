@@ -90,9 +90,6 @@ sqlite3 -header -csv products.db "SELECT * FROM products;" > products.csv
 sqlite3 products.db "DELETE FROM products; DELETE FROM sqlite_sequence WHERE name='products'; VACUUM;"
 
 
+curl -i -X POST http://localhost:8000/mcp -H "Authorization: Bearer secret-token" -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"clientInfo\":{\"name\":\"curl\",\"version\":\"1.0\"}}}"
 
-
-
-
-
- 
+curl -X POST http://localhost:8000/mcp -H "Authorization: Bearer secret-token3" -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" -H "Mcp-Session-Id: fe187d915df945d995fa05db1f07a9fc" -d "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"get_time\",\"arguments\":{}}}"
