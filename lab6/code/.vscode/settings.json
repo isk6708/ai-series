@@ -1,0 +1,10 @@
+{
+    "chat.mcp.serverSampling": {
+        "code/.vscode/mcp.json: python-server": {
+            "allowedModels": [
+                "copilot/grok-4.7",
+                "copilot/gemini-3.8-flash"
+            ]
+        }
+    }
+}
