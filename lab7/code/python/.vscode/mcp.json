@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "day3-sampling": {
+      "type": "stdio",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": ["${workspaceFolder}\\sample-server-db.py"]
+    }
+  }
+}

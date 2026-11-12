@@ -25,7 +25,7 @@ from mcp.client.stdio import stdio_client
 
 from llm import call_llm, check_settings
 
-SERVER = str(Path(__file__).with_name("sample-server.py"))
+SERVER = str(Path(__file__).with_name("sample-server-db.py"))
 
 # Create server parameters for stdio connection
 server_params = StdioServerParameters(
