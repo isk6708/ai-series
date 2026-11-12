@@ -1,0 +1,10 @@
+{
+    "chat.mcp.serverSampling": {
+        "python/.vscode/mcp.json: lab8-elicitation-demo": {
+            "allowedModels": [
+                "agent-host-copilotcli:claude-haiku-4.5",
+                "agent-host-codex:@provider=vscode-proxy:gpt-5.6-luna"
+            ]
+        }
+    }
+}
