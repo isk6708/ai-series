@@ -29,12 +29,12 @@ def generate_token():
     now = datetime.datetime.now(datetime.timezone.utc)
     # the user info and its claims and expiry time
     payload = {
-        "sub": "1234567890",               # Subject (user ID)
+        "sub": "12345678902",               # Subject (user ID)
         "name": "User Userson",                # Custom claim
         "admin": True,                     # Custom claim
         "iat": now,                        # Issued at
         "exp": now + datetime.timedelta(hours=1),  # Expiry
-        "scopes": ["Admin.Write", "User.Read"]  # Custom claim for scopes/permissions
+        "scopes": ["User.Write", "User.Read"]  # Custom claim for scopes/permissions
     }
 
     # encode it
