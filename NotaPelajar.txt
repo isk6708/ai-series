@@ -79,7 +79,15 @@ ollama pull qwen3:8b
 ollama pull gemma3:12b
 
 
+Day 3
 
+vscode - mcp.json
+sqlite3 products.db "SELECT * FROM products;"
+mcp dev sample-server-db.py
+python sample-client.py
+sqlite3 -header -csv products.db "SELECT * FROM products;" > products.csv
+
+sqlite3 products.db "DELETE FROM products; DELETE FROM sqlite_sequence WHERE name='products'; VACUUM;"
 
 
 
