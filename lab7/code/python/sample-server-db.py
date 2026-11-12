@@ -1,5 +1,5 @@
-# sample-server.py - SAMPLING demo: the server asks the CLIENT's LLM to write
-# a product description. MCP Python SDK v2.
+# sample-server-db.py - SAMPLING demo: the server asks the CLIENT's LLM to write
+# a product description, then saves the product in SQLite. MCP Python SDK v2.
 #
 # v1 -> v2 changes:
 #   from mcp.server.fastmcp import Context, FastMCP
@@ -10,6 +10,7 @@
 #
 # Storage: products are saved in SQLite (products.db next to this script) so
 # they survive server restarts. Override the location with PRODUCTS_DB=/path.
+# sqlite3 is part of Python's standard library - nothing to pip install.
 #
 # Note: sampling (ctx.session.create_message) is deprecated as of MCP protocol
 # 2026-07-28 but still works with clients on earlier protocol versions, like
@@ -19,8 +20,9 @@ import os
 import sqlite3
 import sys
 import warnings
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional
+from typing import Iterator, Optional
 
 from pydantic import BaseModel
 
@@ -40,7 +42,7 @@ warnings.filterwarnings("ignore", message="The sampling capability is deprecated
 # Absolute path: MCP clients often launch the server from another working dir.
 DB_PATH = os.environ.get("PRODUCTS_DB", str(Path(__file__).resolve().parent / "products.db"))
 
-mcp = MCPServer(name="Sampling Example")
+mcp = MCPServer(name="Sampling Example (SQLite)")
 
 
 class Product(BaseModel):
@@ -51,14 +53,23 @@ class Product(BaseModel):
 
 # ---------------------------------------------------------------- database --
 
-def get_conn() -> sqlite3.Connection:
+@contextmanager
+def db() -> Iterator[sqlite3.Connection]:
+    """Open a connection, commit on success, roll back on error, always close."""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    return conn
+    try:
+        yield conn
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
 
 
 def init_db() -> None:
-    with get_conn() as conn:
+    with db() as conn:
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS products (
@@ -72,12 +83,13 @@ def init_db() -> None:
 
 
 def insert_product(name: str, description: str) -> Product:
-    with get_conn() as conn:
+    with db() as conn:
         cur = conn.execute(
             "INSERT INTO products (name, description) VALUES (?, ?)",
             (name, description),
         )
-        return Product(id=cur.lastrowid, name=name, description=description)
+        product_id = cur.lastrowid
+    return Product(id=product_id, name=name, description=description)
 
 
 def row_to_product(row: sqlite3.Row) -> Product:
@@ -89,26 +101,31 @@ def row_to_product(row: sqlite3.Row) -> Product:
 @mcp.tool()
 def get_products() -> list[Product]:
     """List all products stored in the database."""
-    with get_conn() as conn:
-        rows = conn.execute("SELECT id, name, description FROM products ORDER BY id").fetchall()
+    with db() as conn:
+        rows = conn.execute(
+            "SELECT id, name, description FROM products ORDER BY id"
+        ).fetchall()
     return [row_to_product(r) for r in rows]
 
 
 @mcp.tool()
-def get_product(product_id: int) -> Product | str:
+def get_product(product_id: int) -> Product:
     """Get one product by its id."""
-    with get_conn() as conn:
+    with db() as conn:
         row = conn.execute(
             "SELECT id, name, description FROM products WHERE id = ?", (product_id,)
         ).fetchone()
-    return row_to_product(row) if row else f"Product {product_id} not found"
+    if row is None:
+        # The SDK turns this into a tool result with isError=True.
+        raise ValueError(f"Product {product_id} not found")
+    return row_to_product(row)
 
 
 @mcp.tool()
 def search_products(query: str) -> list[Product]:
     """Find products whose name or description contains the query text."""
     like = f"%{query}%"
-    with get_conn() as conn:
+    with db() as conn:
         rows = conn.execute(
             "SELECT id, name, description FROM products "
             "WHERE name LIKE ? OR description LIKE ? ORDER BY id",
@@ -120,9 +137,13 @@ def search_products(query: str) -> list[Product]:
 @mcp.tool()
 def delete_product(product_id: int) -> str:
     """Delete a product by its id."""
-    with get_conn() as conn:
-        cur = conn.execute("DELETE FROM products WHERE id = ?", (product_id,))
-    return f"Deleted product {product_id}" if cur.rowcount else f"Product {product_id} not found"
+    with db() as conn:
+        deleted = conn.execute(
+            "DELETE FROM products WHERE id = ?", (product_id,)
+        ).rowcount
+    if not deleted:
+        raise ValueError(f"Product {product_id} not found")
+    return f"Deleted product {product_id}"
 
 
 @mcp.tool()
@@ -157,13 +178,13 @@ async def create_product(product_name: str, keywords: str, ctx: Context) -> str 
     product = insert_product(product_name, description)
 
     # return the complete product
-    return json.dumps({
-        "id": product.id,
-        "name": product.name,
-        "description": product.description
-    })
+    return json.dumps(
+        {"id": product.id, "name": product.name, "description": product.description},
+        ensure_ascii=False,
+    )
 
 
+# Create the table on import, so products.db is ready however the server starts.
 init_db()
 
 if __name__ == "__main__":
